@@ -491,6 +491,7 @@ export interface OpenSeaAssetQuery {
     order_direction?: string;
     limit?: number;
     offset?: number;
+    cursor?: string;
 }
 /**
  * Query interface for Fungible Assets
