@@ -216,21 +216,28 @@ export class OpenSeaAPI {
    * `limit` and `offset` attributes from OpenSeaAssetQuery
    */
   public async getAssets(
-    query: OpenSeaAssetQuery = {},
-    page = 1
-  ): Promise<{ assets: OpenSeaAsset[]; estimatedCount: number }> {
-    const json = await this.get<{ estimated_count: number; assets: unknown[] }>(
-      `${API_PATH}/assets/`,
-      {
-        limit: this.pageSize,
-        offset: (page - 1) * this.pageSize,
-        ...query,
-      }
-    );
+    query: OpenSeaAssetQuery = {}
+  ): Promise<{
+    assets: OpenSeaAsset[];
+    estimatedCount: number;
+    next: string | undefined;
+    previous: string | undefined;
+  }> {
+    const json = await this.get<{
+      estimated_count: number;
+      assets: unknown[];
+      next: string | undefined;
+      previous: string | undefined;
+    }>(`${API_PATH}/assets/`, {
+      limit: this.pageSize,
+      ...query,
+    });
 
     return {
       assets: json.assets.map((j) => assetFromJSON(j)),
       estimatedCount: json.estimated_count,
+      next: json.next,
+      previous: json.previous,
     };
   }
 
